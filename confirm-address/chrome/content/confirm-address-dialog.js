@@ -46,7 +46,7 @@ caDialog.createListItem = function (item) {
 	listitem.checkbox = checkbox;
 	listitem.onclick = function(e) {
 		var checked = this.checkbox.checked;
-		this.checkbox.checked = !checked;
+		this.checkbox.setAttribute("checked", !checked);
 		this.className = !checked ? 'confirmed-item' : '';
 		caDialog.checkAllChecked();
 	};
@@ -96,7 +96,7 @@ caDialog.switchInternalCheckBox = function (targetdomains) {
 	var isCheck = allCheck.checked;
 	for (var i = 0, len = items.length; i < len; i++) {
 		var listitem = items[i];
-		listitem.checkbox.checked = isCheck;
+		listitem.checkbox.setAttribute("checked", isCheck);
 		listitem.className = isCheck ? 'confirmed-item' : '';
 	}
 
