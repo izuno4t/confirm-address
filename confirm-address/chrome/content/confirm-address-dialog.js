@@ -107,12 +107,12 @@ caDialog.switchInternalCheckBox = function (targetdomains) {
 
 
 caDialog.doOK = function () {
-	window.arguments[0].confirmOK = true;
+	window.arguments[0].setConfirmOK(true);
 	return true;
 };
 
 
 caDialog.doCancel = function () {
-	window.arguments[0].confirmOK = false;
+	window.arguments[0].setConfirmOK(false);
 	return true;
 };

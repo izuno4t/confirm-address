@@ -1,5 +1,7 @@
 var ConfirmAddress = {
 
+  countDownComplete: false,
+
   checkAddress: function(){
   	var msgCompFields = gMsgCompose.compFields;
 
@@ -27,13 +29,13 @@ var ConfirmAddress = {
   	var isNotDisplay = nsPreferences.getBoolPref(CA_CONST.IS_NOT_DISPLAY, false);
 
   	if(isNotDisplay && externalList.length == 0 && internalList.length > 0){
-  		window.confirmOK = true;
-  	}else{
-      window.confirmOK = false;
-      window.openDialog("chrome://confirm-address/content/confirm-address-dialog.xul",
-        "ConfirmAddressDialog", "resizable,chrome,modal,titlebar,centerscreen",
-        window, internalList, externalList);
-    }
+		window.setConfirmOK(true);
+	}else{
+		window.setConfirmOK(false);
+		window.openDialog("chrome://confirm-address/content/confirm-address-dialog.xul",
+			"ConfirmAddressDialog", "resizable,chrome,modal,titlebar,centerscreen",
+			window, internalList, externalList);
+	}
 
   	if(window.confirmOK){
   		var isCountDown = nsPreferences.getBoolPref(CA_CONST.IS_COUNT_DOWN, false);
@@ -41,11 +43,11 @@ var ConfirmAddress = {
   		if(isCountDown){
   			var countDonwTime = nsPreferences.copyUnicharPref(CA_CONST.COUNT_DOWN_TIME);
 
-  			window.countDownComplete = false;
+			this.countDownComplete = false;
   			window.openDialog("chrome://confirm-address/content/countdown.xul", "CountDown Dialog",
   			"resizable,chrome,modal,titlebar,centerscreen",window, countDonwTime);
 
-  			if(window.countDownComplete){
+			if(this.countDownComplete){
   				return true;
   			}else{
   				dump("cancel");

@@ -1,11 +1,19 @@
+var EXPORTED_SYMBOLS = ["setConfirmOK", "startup", "addItem", "editItem", "removeItem", "doOK", "doCancel"];
+
 var CA_CONST = {
 	DOMAIN_LIST : "domain-list",
 	IS_NOT_DISPLAY : "not-display",
 	IS_COUNT_DOWN : "is-countdown",
 	COUNT_DOWN_TIME : "cd-time",
-  TREE_STYLE : "tree-style",
+	TREE_STYLE : "tree-style",
 	IS_CONFIRM_REPLY_TO : "is-confirm-reply-to"
 };
+
+var confirmOK = false;
+
+function setConfirmOK(ok) {
+	confirmOK = ok;
+}
 
 function startup(){
 	//init domain list.
@@ -52,7 +60,7 @@ function startup(){
 }
 
 function addItem() {
-	window.confirmOK = false;
+	confirmOK = false;
 	window.domainName = null;
 	window.openDialog("chrome://confirm-address/content/setting-add-domain.xul",
 		"ConfirmAddressDialog", "chrome,modal,titlebar,centerscreen", window);
@@ -74,12 +82,12 @@ function editItem() {
 	if (selectedItem === null) {
 		return;
 	}
-	window.confirmOK = false;
+	confirmOK = false;
 	window.domainName = selectedItem.label;
 	window.openDialog("chrome://confirm-address/content/setting-add-domain.xul",
 		"ConfirmAddressDialog", "chrome,modal,titlebar,centerscreen", window);
 
-	if (window.confirmOK) {
+	if (confirmOK) {
 		var domainName = window.domainName;
 		if (domainName.length > 0) {
 			dump("[edit!] " + domainName + "\n");

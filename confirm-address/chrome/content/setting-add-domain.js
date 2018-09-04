@@ -12,10 +12,10 @@ function startup(){
 function doOK(){
 	parentWindow.domainName = document.getElementById("textbox").value;
 	dump("[input] " + parentWindow.domainName + "\n");
-	parentWindow.confirmOK = true;
+	parentWindow.setConfirmOK(true);
 }
 
 function doCancel(){
 	dump("[cancel]\n");
-	parentWindow.confirmOK = false;	
+	parentWindow.setConfirmOK(false);
 }

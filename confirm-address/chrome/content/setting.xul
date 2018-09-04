@@ -10,7 +10,7 @@
         ondialogcancel="doCancel();">
 
 	<script type="application/javascript" src="nsUserSettings.js"/>
-	<script type="application/javascript" src="setting.js"/>
+	<script type="application/javascript" src="chrome://confirm-address/content/setting.js"/>
 
 	<label value="&setting.dialog.message;"/>
 	<listbox id="group-list" rows="5">
