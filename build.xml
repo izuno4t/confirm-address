@@ -5,8 +5,7 @@
 	
 	<target name="build">
 		<echo>${dist}</echo>
-		<zip destfile="${dist}"
-			basedir="${base}"/>
+		<zip destfile="${dist}" basedir="${base}" excludes="chrome/content/unittest/**"/>
 	</target>
 	
 </project>
