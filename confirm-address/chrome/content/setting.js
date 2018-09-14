@@ -1,18 +1,26 @@
+var EXPORTED_SYMBOLS = ["setConfirmOK", "startup", "addItem", "editItem", "removeItem", "doOK", "doCancel"];
+
 var CA_CONST = {
-	DOMAIN_LIST : "com.kenmaz.confirm-address.domain-list",
-	IS_NOT_DISPLAY : "com.kenmaz.confirm-address.not-display",
-	IS_COUNT_DOWN : "com.kenmaz.confirm-address.is-countdown",
-	COUNT_DOWN_TIME : "com.kenmaz.confirm-address.cd-time",
-  TREE_STYLE : "com.kenmaz.confirm-address.tree-style",
-	IS_CONFIRM_REPLY_TO : "com.kenmaz.confirm-address.is-confirm-reply-to"
+	DOMAIN_LIST : "domain-list",
+	IS_NOT_DISPLAY : "not-display",
+	IS_COUNT_DOWN : "is-countdown",
+	COUNT_DOWN_TIME : "cd-time",
+	TREE_STYLE : "tree-style",
+	IS_CONFIRM_REPLY_TO : "is-confirm-reply-to"
 };
+
+var confirmOK = false;
+
+function setConfirmOK(ok) {
+	confirmOK = ok;
+}
 
 function startup(){
 	//init domain list.
 	var domains = nsPreferences.copyUnicharPref(CA_CONST.DOMAIN_LIST);
 	dump("[registed domains] " + domains + "\n");
 
-	if(domains != null) {
+	if(domains !== "") {
 	  var domainList = domains.split(","),
 	      groupList = document.getElementById("group-list");
 	  for (var i = 0, len = domainList.length; i < len; i++){
@@ -34,7 +42,7 @@ function startup(){
 	}, true);
 
 	var isCountDown = nsPreferences.getBoolPref(CA_CONST.IS_COUNT_DOWN, false);
-	if (isCountDown == null || isCountDown == false) {
+	if (isCountDown === null || isCountDown === false) {
 		cdBox.checked = false;
 		cdTimeBox.disabled = true;
 	} else {
@@ -45,14 +53,14 @@ function startup(){
 	var countDonwTime = nsPreferences.copyUnicharPref(CA_CONST.COUNT_DOWN_TIME);
 	cdTimeBox.value = countDonwTime;
 
-  // init checkbox [confrim Reply-To address before sending]
+	// init checkbox [confrim Reply-To address before sending]
 	var isConfirmReplyTo = nsPreferences.getBoolPref(CA_CONST.IS_CONFIRM_REPLY_TO);
-  var replyBox = document.getElementById("confirm-reply-to");
+	var replyBox = document.getElementById("confirm-reply-to");
 	replyBox.checked = isConfirmReplyTo;
 }
 
 function addItem() {
-	window.confirmOK = false;
+	confirmOK = false;
 	window.domainName = null;
 	window.openDialog("chrome://confirm-address/content/setting-add-domain.xul",
 		"ConfirmAddressDialog", "chrome,modal,titlebar,centerscreen", window);
@@ -71,12 +79,15 @@ function editItem() {
 	var groupList = document.getElementById("group-list"),
 	    selectedItem = groupList.selectedItem;
 
-	window.confirmOK = false;
+	if (selectedItem === null) {
+		return;
+	}
+	confirmOK = false;
 	window.domainName = selectedItem.label;
 	window.openDialog("chrome://confirm-address/content/setting-add-domain.xul",
 		"ConfirmAddressDialog", "chrome,modal,titlebar,centerscreen", window);
 
-	if (window.confirmOK) {
+	if (confirmOK) {
 		var domainName = window.domainName;
 		if (domainName.length > 0) {
 			dump("[edit!] " + domainName + "\n");
@@ -87,6 +98,9 @@ function editItem() {
 function removeItem() {
 	var groupList = document.getElementById("group-list"),
 	    selectedItem = groupList.selectedItem;
+	if (selectedItem === null) {
+		return;
+	}
 	dump("[remove] "+selectedItem + "\n");
 	groupList.removeChild(selectedItem);
 }
@@ -123,10 +137,8 @@ function doOK() {
 
 	var replyTo = document.getElementById("confirm-reply-to").checked;
 	nsPreferences.setBoolPref(CA_CONST.IS_CONFIRM_REPLY_TO, replyTo);
-	return true;
 }
 
 function doCancel() {
 	dump("[cancel]\n");
-	return true;
 }

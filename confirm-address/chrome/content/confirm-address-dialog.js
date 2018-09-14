@@ -24,12 +24,6 @@ caDialog.startup = function () {
 	yourDomainsHeader.onclick = function(e) {
 		caDialog.switchInternalCheckBox(internalList);
 	};
-
-	//他ドメインあて先リストヘッダ
-	var otherDomainsHeader = document.getElementById("otherDomains_allcheck");
-	otherDomainsHeader.onclick = function(e) {
-		caDialog.switchInternalCheckBox(externalList);
-	};
 };
 
 caDialog.createListItem = function (item) {
@@ -52,6 +46,7 @@ caDialog.createListItem = function (item) {
 	listitem.checkbox = checkbox;
 	listitem.onclick = function(e) {
 		var checked = this.checkbox.checked;
+		this.checkbox.setAttribute("checked", !checked);
 		this.checkbox.checked = !checked;
 		this.className = !checked ? 'confirmed-item' : '';
 		caDialog.checkAllChecked();
@@ -86,7 +81,6 @@ caDialog.checkAllChecked = function () {
 				externalComplete = false;
 			}
 		}
-		otherdomains.getElementsByClassName("all_check")[0].checked = externalComplete;
 	}
 
 	//送信ボタンのdisable切り替え
@@ -103,6 +97,7 @@ caDialog.switchInternalCheckBox = function (targetdomains) {
 	var isCheck = allCheck.checked;
 	for (var i = 0, len = items.length; i < len; i++) {
 		var listitem = items[i];
+		listitem.checkbox.setAttribute("checked", isCheck);
 		listitem.checkbox.checked = isCheck;
 		listitem.className = isCheck ? 'confirmed-item' : '';
 	}
@@ -112,12 +107,12 @@ caDialog.switchInternalCheckBox = function (targetdomains) {
 
 
 caDialog.doOK = function () {
-	window.arguments[0].confirmOK = true;
+	window.arguments[0].setConfirmOK(true);
 	return true;
 };
 
 
 caDialog.doCancel = function () {
-	window.arguments[0].confirmOK = false;
+	window.arguments[0].setConfirmOK(false);
 	return true;
 };

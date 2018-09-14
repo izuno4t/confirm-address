@@ -13,7 +13,7 @@
 	buttondisabledaccept="true"
 	width="500" height="385">
 
-	<script type="application/x-javascript" src="chrome://confirm-address/content/confirm-address-dialog.js"/>
+	<script type="application/javascript" src="confirm-address-dialog.js"/>
 
 	<label id="dialog_message" value="&confirm.dialog.message;"/>
 	<listbox id="yourDomains" rows="4">
@@ -32,9 +32,7 @@
 	</listbox>
 	<listbox id="otherDomains" rows="5">
 	  <listhead>
-			<listheader id="otherDomains_allcheck" tooltiptext="&confirm.dialog.otherdomain.tooltip;">
-				<checkbox class="all_check"/>
-			</listheader>
+			<listheader />
 			<listheader />
 	    <listheader id="otherDomains_header" label="&confirm.dialog.otherdomain.label;"/>
 	  </listhead>
