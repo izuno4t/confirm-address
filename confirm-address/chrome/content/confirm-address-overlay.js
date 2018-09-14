@@ -2,8 +2,15 @@
 
 //overlay
 //C:\Program Files\Mozilla Thunderbird\chrome\messenger\content\messenger\messengercompose\MsgComposeCommands.js
-var SendMessage = function() {
-  if( !ConfirmAddress.checkAddress() ) {
+
+var EXPORTED_SYMBOLS = ["SendMessage", "SendMessageWithCheck", "SendMessageLater"];
+
+let global = this;
+ChromeUtils.import("resource://gre/modules/Services.jsm");
+ChromeUtils.import("chrome://confirm-address/content/confirm-address.js", global);
+
+var SendMessage = function () {
+  if( !global.ConfirmAddress.checkAddress() ) {
     return;
   }
 
@@ -20,17 +27,18 @@ var SendMessage = function() {
       sendInBackground = false;
   }
 
-  GenericSendMessage(sendInBackground ?
-                     nsIMsgCompDeliverMode.Background :
-                     nsIMsgCompDeliverMode.Now);
-  ExitFullscreenMode();
+  var window = Services.wm.getMostRecentWindow("msgcompose");
+  window.GenericSendMessage(sendInBackground ?
+                            Ci.nsIMsgCompDeliverMode.Background :
+                            Ci.nsIMsgCompDeliverMode.Now);
+  window.ExitFullscreenMode();
 }
 
 //overlay
 //C:\Program Files\Mozilla Thunderbird\chrome\messenger\content\messenger\messengercompose\MsgComposeCommands.js
-var SendMessageWithCheck = function() {
+var SendMessageWithCheck = function () {
   //add start
-  if(!ConfirmAddress.checkAddress()){
+  if(!global.ConfirmAddress.checkAddress()){
     return;
   }
   //add end
@@ -58,22 +66,24 @@ var SendMessageWithCheck = function() {
     }
   }
   var sendInBackground = Services.prefs.getBoolPref("mailnews.sendInBackground");
-  GenericSendMessage(Services.io.offline ? nsIMsgCompDeliverMode.Later :
-                     (sendInBackground ?
-                      nsIMsgCompDeliverMode.Background :
-                      nsIMsgCompDeliverMode.Now));
-  ExitFullscreenMode();
-}
+  var window = Services.wm.getMostRecentWindow("msgcompose");
+  window.GenericSendMessage(Services.io.offline ? Ci.nsIMsgCompDeliverMode.Later :
+                            (sendInBackground ?
+                             Ci.nsIMsgCompDeliverMode.Background :
+                             Ci.nsIMsgCompDeliverMode.Now));
+  window.ExitFullscreenMode();
+};
 
 
-var SendMessageLater = function() {
+var SendMessageLater = function () {
   //add start
-  if(!ConfirmAddress.checkAddress()){
+  if(!global.ConfirmAddress.checkAddress()){
     return;
   }
   //add end
 
   // Copied from MsgComposeCommands.js.
-  GenericSendMessage(nsIMsgCompDeliverMode.Later);
-  ExitFullscreenMode();
-}
+  var window = Services.wm.getMostRecentWindow("msgcompose");
+  window.GenericSendMessage(Ci.nsIMsgCompDeliverMode.Later);
+  window.ExitFullscreenMode();
+};

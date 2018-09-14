@@ -1,4 +1,6 @@
-var EXPORTED_SYMBOLS = ["setConfirmOK", "startup", "addItem", "editItem", "removeItem", "doOK", "doCancel"];
+var EXPORTED_SYMBOLS = ["CA_CONST", "setConfirmOK", "isConfirmOK", "startup", "addItem", "editItem", "removeItem", "doOK", "doCancel"];
+
+ChromeUtils.import("chrome://confirm-address/content/nsUserSettings.js");
 
 var CA_CONST = {
 	DOMAIN_LIST : "domain-list",
@@ -13,6 +15,10 @@ var confirmOK = false;
 
 function setConfirmOK(ok) {
 	confirmOK = ok;
+}
+
+function isConfirmOK() {
+	return confirmOK === true;
 }
 
 function startup(){

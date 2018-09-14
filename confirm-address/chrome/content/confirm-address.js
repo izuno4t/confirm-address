@@ -1,9 +1,19 @@
+const EXPORTED_SYMBOLS = ["ConfirmAddress"];
+
+var global = this;
+ChromeUtils.import("resource://gre/modules/Services.jsm");
+ChromeUtils.import("chrome://confirm-address/content/nsUserSettings.js", this);
+ChromeUtils.import("chrome://confirm-address/content/setting.js", this);
+
+const CA_CONST = global.CA_CONST;
+
 var ConfirmAddress = {
 
   countDownComplete: false,
 
   checkAddress: function(){
-  	var msgCompFields = gMsgCompose.compFields;
+    var window = Services.wm.getMostRecentWindow("msgcompose");
+    var msgCompFields = window.gMsgCompose.compFields;
 
   	var toList = [];
   	var ccList = [];
@@ -29,36 +39,36 @@ var ConfirmAddress = {
   	var isNotDisplay = nsPreferences.getBoolPref(CA_CONST.IS_NOT_DISPLAY, false);
 
   	if(isNotDisplay && externalList.length == 0 && internalList.length > 0){
-		window.setConfirmOK(true);
+		global.setConfirmOK(true);
 	}else{
-		window.setConfirmOK(false);
+		global.setConfirmOK(false);
 		window.openDialog("chrome://confirm-address/content/confirm-address-dialog.xul",
 			"ConfirmAddressDialog", "resizable,chrome,modal,titlebar,centerscreen",
-			window, internalList, externalList);
+			global, internalList, externalList);
 	}
 
-  	if(window.confirmOK){
-  		var isCountDown = nsPreferences.getBoolPref(CA_CONST.IS_COUNT_DOWN, false);
+    if(global.isConfirmOK()){
+        var isCountDown = nsPreferences.getBoolPref(CA_CONST.IS_COUNT_DOWN, false);
 
-  		if(isCountDown){
-  			var countDonwTime = nsPreferences.copyUnicharPref(CA_CONST.COUNT_DOWN_TIME);
+        if(isCountDown){
+            var countDonwTime = nsPreferences.copyUnicharPref(CA_CONST.COUNT_DOWN_TIME);
 
-			this.countDownComplete = false;
-  			window.openDialog("chrome://confirm-address/content/countdown.xul", "CountDown Dialog",
-  			"resizable,chrome,modal,titlebar,centerscreen",window, countDonwTime);
+            this.countDownComplete = false;
+            window.openDialog("chrome://confirm-address/content/countdown.xul", "CountDown Dialog",
+            "resizable,chrome,modal,titlebar,centerscreen",global, countDonwTime);
 
-			if(this.countDownComplete){
-  				return true;
-  			}else{
-  				dump("cancel");
-  				return false;
-  			}
-  		}else{
-  			return true;
-  		}
-  	}else{
-  		return false;
-  	}
+            if(this.countDownComplete){
+                return true;
+            }else{
+                dump("cancel");
+                return false;
+            }
+        }else{
+            return true;
+        }
+    }else{
+        return false;
+    }
   },
 
   getByDomainMap : function(list){
@@ -85,11 +95,12 @@ var ConfirmAddress = {
   		return;
   	}
 
+    var window = Services.wm.getMostRecentWindow("msgcompose");
     var includeReplyTo = nsPreferences.getBoolPref(CA_CONST.IS_CONFIRM_REPLY_TO, false);
   	var row = 0;
   	while(true){
       row++;
-  		var inputField = document.getElementById("addressCol2#" + row);
+		var inputField = window.document.getElementById("addressCol2#" + row);
 
   		if(inputField == null){
   			break;
@@ -110,8 +121,8 @@ var ConfirmAddress = {
   				recipient = fieldValue;
   			}
 
-  			var recipientType = "";
-  			var popupElement = document.getElementById("addressCol1#" + row);
+			var recipientType = "";
+			var popupElement = window.document.getElementById("addressCol1#" + row);
   			if(popupElement != null){
   				recipientType = popupElement.selectedItem.getAttribute("value");
   			}
@@ -139,9 +150,9 @@ var ConfirmAddress = {
   	}
   },
 
-	/**
+  /**
    * addressArrayに含まれるアドレスを判定し、組織外、組織内に振り分けます
-	 */
+   */
   judge : function(addressArray, domainList, yourDomainAddress, otherDomainAddress){
   	dump("[JUDGE] "+addressArray+"\n");
 
@@ -155,26 +166,26 @@ var ConfirmAddress = {
 
   	//compare addresses with registered domain lists.
   	for(var i = 0; i < addressArray.length; i++){
-  		var target = addressArray[i];
-      var address = target.address;
-  		if(address.length == 0){
-  			continue;
-  		}
-			var domain = address.substring(address.indexOf("@")).toLowerCase();
+        var target = addressArray[i];
+        var address = target.address;
+        if(address.length == 0){
+            continue;
+        }
+        var domain = address.substring(address.indexOf("@")).toLowerCase();
 
-			match = false;
-  		for(var j = 0; j < domainList.length; j++){
-  			var insiderDomain = domainList[j].toLowerCase();
-  			if(domain.indexOf(insiderDomain) != -1){
-					match = true;
-  			}
-  		}
-			if(match){
-  			yourDomainAddress.push(target);
-			}else{
- 				otherDomainAddress.push(target);
-			}
-  	}
+        var match = false;
+        for(var j = 0; j < domainList.length; j++){
+            var insiderDomain = domainList[j].toLowerCase();
+            if(domain.indexOf(insiderDomain) != -1){
+                    match = true;
+            }
+        }
+        if(match){
+            yourDomainAddress.push(target);
+        }else{
+            otherDomainAddress.push(target);
+        }
+    }
   },
 
   getDomainList : function(){
@@ -184,4 +195,4 @@ var ConfirmAddress = {
   	}
   	return domains.split(",");
   }
-}
+};
