@@ -13,14 +13,8 @@
 	<script type="application/javascript" src="chrome://confirm-address/content/setting.js"/>
 
 	<label value="&setting.dialog.message;"/>
-	<listbox id="group-list" rows="5">
-	  <listhead>
-	    <listheader label="&setting.dialog.list.label;"/>
-	  </listhead>
-	  <listcols>
-	    <listcol flex="1"/>
-	  </listcols>
-	</listbox>
+	<richlistbox id="group-list" rows="5" maxwidth="300">
+	</richlistbox>
 
 	<hbox>
 	  <button id="add" oncommand="addItem();" flex="1"

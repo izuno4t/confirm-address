@@ -1,7 +1,27 @@
 var caDialog = {};
 
+const NOT_CHECKED = "chrome://messenger/skin/icons/notchecked.gif";
+const CHECK = "chrome://messenger/skin/icons/check.gif";
+
 caDialog.startup = function () {
 	var listitem;
+
+	var onClickCheck = function (event) {
+		var tree = this;
+		var tbo = tree.treeBoxObject;
+		// get the row, col and child element at the point
+		var row = {}, col = {}, child = {};
+		tbo.getCellAt(event.clientX, event.clientY, row, col, child);
+		if (col.value != null && col.value.id.indexOf("CheckCol") > 0) {
+			var checked = tree.view.getCellValue(row.value, col.value) == "true";
+			var item = tree.children[1].children[row.value];
+			var cells = item.getElementsByTagName("treecell");
+			for (var i = 0, len = cells.length; i < len; i++) {
+				cells[i].setAttribute("properties", checked ? 'checked' : '');
+			}
+			caDialog.checkAllChecked();
+		}
+	};
 
 	//自ドメインあて先リスト
 	var internals = window.arguments[1];
@@ -10,6 +30,7 @@ caDialog.startup = function () {
 		listitem = caDialog.createListItem(internals[i]);
 		internalList.appendChild(listitem);
 	}
+	internalList.parentNode.onclick = onClickCheck;
 
 	//他ドメインあて先リスト
 	var externals = window.arguments[2];
@@ -18,66 +39,65 @@ caDialog.startup = function () {
 		listitem = caDialog.createListItem(externals[j]);
 		externalList.appendChild(listitem);
 	}
+	externalList.parentNode.onclick = onClickCheck;
 
 	//自ドメインあて先リストヘッダ
-	var yourDomainsHeader = document.getElementById("yourDomains_allcheck");
-	yourDomainsHeader.onclick = function(e) {
+	var yourDomainsHeader = document.getElementById("yourDomainsCheckCol");
+	yourDomainsHeader.setAttribute("src", NOT_CHECKED);
+	yourDomainsHeader.onclick = function() {
+		console.log('click all');
 		caDialog.switchInternalCheckBox(internalList);
 	};
 };
 
 caDialog.createListItem = function (item) {
-	var listitem = document.createElement("listitem");
+	var listitem = document.createElement("treeitem");
+	var row = document.createElement("treerow");
+	listitem.appendChild(row);
 
-	var checkCell = document.createElement("listcell");
-	var checkbox = document.createElement("checkbox");
-	checkbox.setAttribute("class", "confirmed");
-	checkCell.appendChild(checkbox);
-	listitem.appendChild(checkCell);
+	var checkCell = document.createElement("treecell");
+	row.appendChild(checkCell);
 
-	var typeCell = document.createElement("listcell");
+	var typeCell = document.createElement("treecell");
+	typeCell.setAttribute("editable", "false");
 	typeCell.setAttribute("label", item.type);
-	listitem.appendChild(typeCell);
+	row.appendChild(typeCell);
 
-	var labelCell = document.createElement("listcell");
+	var labelCell = document.createElement("treecell");
+	labelCell.setAttribute("editable", "false");
 	labelCell.setAttribute("label", item.address);
-	listitem.appendChild(labelCell);
+	labelCell.setAttribute("flex", "1");
+	row.appendChild(labelCell);
 
-	listitem.checkbox = checkbox;
-	listitem.onclick = function(e) {
-		var checked = this.checkbox.checked;
-		this.checkbox.setAttribute("checked", !checked);
-		this.checkbox.checked = !checked;
-		this.className = !checked ? 'confirmed-item' : '';
-		caDialog.checkAllChecked();
-	};
+	listitem.checkbox = checkCell;
 	return listitem;
 };
 
 
 caDialog.checkAllChecked = function () {
 	var internalComplete = true,
-	    externalComplete = true;
+		externalComplete = true;
 
 	//自ドメインのチェック状況を確認
-	var yourdomains = document.getElementById("yourDomains"),
-	    yd_checkboxes = yourdomains.getElementsByClassName("confirmed");
-	if (0 < yd_checkboxes.length) {
-		for (var i = 0, ylen = yd_checkboxes.length; i < ylen; i++) {
-			if (!yd_checkboxes[i].checked) {
+	var yourdomains = document.getElementById("yourDomainsTree"),
+		yourdomainsCheckCol = yourdomains.columns.getNamedColumn("yourDomainsCheckCol");
+	if (yourdomains.view.rowCount > 0) {
+		for (var i = 0, ylen = yourdomains.view.rowCount; i < ylen; i++) {
+			if (yourdomains.view.getCellValue(i, yourdomainsCheckCol) !== 'true') {
 				internalComplete = false;
 			}
 		}
 		// 全て選択チェックもつけておく
-		yourdomains.getElementsByClassName("all_check")[0].checked = internalComplete;
+		var yourDomainsHeader = document.getElementById("yourDomainsCheckCol");
+		yourDomainsHeader.setAttribute("src", internalComplete ? CHECK : NOT_CHECKED);
 	}
 
 	//他ドメインのチェック状況を確認
-	var otherdomains = document.getElementById("otherDomains"),
-	    od_checkboxes = otherdomains.getElementsByClassName("confirmed");
-	if (0 < od_checkboxes.length) {
-		for (var j = 0, len = od_checkboxes.length; j < len; j++){
-			if (!od_checkboxes[j].checked) {
+	var otherdomains = document.getElementById("otherDomainsTree"),
+		otherdomainsCheckCol = otherdomains.columns.getNamedColumn("otherDomainsCheckCol");
+	if (otherdomains.view.rowCount > 0) {
+		for (var j = 0, len = otherdomains.view.rowCount; j < len; j++){
+			if (otherdomains.view.getCellValue(j, otherdomainsCheckCol) !== 'true') {
 				externalComplete = false;
 			}
 		}
@@ -91,15 +111,21 @@ caDialog.checkAllChecked = function () {
 
 //呼び出しドメインのアドレスのすべての確認ボックスをONまたはOFFにする。
 caDialog.switchInternalCheckBox = function (targetdomains) {
-	var allCheck = targetdomains.getElementsByClassName("all_check")[0],
-	    items = targetdomains.getElementsByTagName("listitem");
+	var tree = targetdomains.parentNode,
+		checkColId = tree.getAttribute("id").replace("Tree", "CheckCol"),
+		checkCol = tree.columns.getNamedColumn(checkColId),
+		checkHeader = document.getElementById(checkColId),
+		items = targetdomains.children,
+		view = tree.view;
 
-	var isCheck = allCheck.checked;
-	for (var i = 0, len = items.length; i < len; i++) {
-		var listitem = items[i];
-		listitem.checkbox.setAttribute("checked", isCheck);
-		listitem.checkbox.checked = isCheck;
-		listitem.className = isCheck ? 'confirmed-item' : '';
+	var checked = checkHeader.getAttribute("src") === NOT_CHECKED;
+	for (var i = 0, len = view.rowCount; i < len; i++) {
+			var listitem = items[i];
+			view.setCellValue(i, checkCol, String(checked));
+			var cells = listitem.getElementsByTagName("treecell");
+			for (var j = 0, clen = cells.length; j < clen; j++) {
+				cells[j].setAttribute("properties", checked ? 'checked' : '');
+			}
 	}
 
 	caDialog.checkAllChecked();

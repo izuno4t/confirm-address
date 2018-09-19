@@ -97,7 +97,7 @@ function editItem() {
 		var domainName = window.domainName;
 		if (domainName.length > 0) {
 			dump("[edit!] " + domainName + "\n");
-			selectedItem.setAttribute("label", domainName);
+			selectedItem.firstChild.value = domainName;
 		}
 	}
 }
@@ -120,7 +120,7 @@ function doOK() {
 	var groupList = document.getElementById("group-list");
 	var nodes = groupList.childNodes;
 	for (var i = 0, len = nodes.length; i < len; i++){
-		if(nodes[i].nodeName == "listitem"){
+		if(nodes[i].nodeName == "richlistitem"){
 			domainList.push(nodes[i].label);
 		}
 	}

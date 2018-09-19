@@ -16,30 +16,24 @@
 	<script type="application/javascript" src="confirm-address-dialog.js"/>
 
 	<label id="dialog_message" value="&confirm.dialog.message;"/>
-	<listbox id="yourDomains" rows="4">
-	  <listhead>
-			<listheader id="yourDomains_allcheck" tooltiptext="&confirm.dialog.yourdomain.tooltip;">
-				<checkbox class="all_check"/>
-			</listheader>
-			<listheader />
-	    <listheader id="yourDomains_header" label="&confirm.dialog.yourdomain.label;"/>
-	  </listhead>
-	  <listcols>
-	    <listcol/>
-	    <listcol/>
-	    <listcol flex="1"/>
-	  </listcols>
-	</listbox>
-	<listbox id="otherDomains" rows="5">
-	  <listhead>
-			<listheader />
-			<listheader />
-	    <listheader id="otherDomains_header" label="&confirm.dialog.otherdomain.label;"/>
-	  </listhead>
-	  <listcols>
-	    <listcol/>
-	    <listcol/>
-	    <listcol flex="1"/>
-	  </listcols>
-	</listbox>
+	<tree flex="1" rows="4" editable="true" hidecolumnpicker="true" id="yourDomainsTree">
+		<treecols>
+			<treecol type="checkbox" editable="true" width="40" id="yourDomainsCheckCol" class="treecol-image"
+				tooltiptext="&confirm.dialog.yourdomain.tooltip;">
+			</treecol>
+			<treecol width="30" />
+			<treecol flex="2" id="yourDomains_header" label="&confirm.dialog.yourdomain.label;"/>
+		</treecols>
+		<treechildren id="yourDomains">
+		</treechildren>
+	</tree>
+	<tree flex="1" rows="5" editable="true" hidecolumnpicker="true" id="otherDomainsTree">
+		<treecols>
+			<treecol type="checkbox" editable="true" width="40" id="otherDomainsCheckCol" />
+			<treecol width="30" />
+			<treecol flex="2" id="otherDomains_header" label="&confirm.dialog.otherdomain.label;"/>
+		</treecols>
+		<treechildren id="otherDomains">
+		</treechildren>
+	</tree>
 </dialog>
