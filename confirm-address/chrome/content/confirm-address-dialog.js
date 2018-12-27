@@ -41,13 +41,25 @@ caDialog.startup = function () {
 	}
 	externalList.parentNode.onclick = onClickCheck;
 
-	//自ドメインあて先リストヘッダ
+	//自ドメインあて先リストヘッダ イベント設定
 	var yourDomainsHeader = document.getElementById("yourDomainsCheckCol");
-	yourDomainsHeader.setAttribute("src", NOT_CHECKED);
-	yourDomainsHeader.onclick = function() {
-		console.log('click all');
-		caDialog.switchInternalCheckBox(internalList);
-	};
+	var isBatchCheckYour = nsPreferences.getBoolPref(CA_CONST.IS_BATCH_CHECK_MYDOMAIN);
+	if (isBatchCheckYour){
+		yourDomainsHeader.setAttribute("src", NOT_CHECKED);
+		yourDomainsHeader.onclick = function() {
+			caDialog.switchInternalCheckBox(internalList);
+		};
+	}
+
+	//他ドメインあて先リストヘッダ イベント設定
+	var otherDomainsHeader = document.getElementById("otherDomainsCheckCol");
+	var isBatchCheckOther = nsPreferences.getBoolPref(CA_CONST.IS_BATCH_CHECK_OTHERDOMAIN);
+	if (isBatchCheckOther){
+		otherDomainsHeader.setAttribute("src", NOT_CHECKED);
+		otherDomainsHeader.onclick = function() {
+			caDialog.switchInternalCheckBox(externalList);
+		};
+	}
 };
 
 caDialog.createListItem = function (item) {
@@ -101,6 +113,9 @@ caDialog.checkAllChecked = function () {
 				externalComplete = false;
 			}
 		}
+		// 全て選択チェックもつけておく
+		var otherDomainsHeader = document.getElementById("otherDomainsCheckCol");
+		otherDomainsHeader.setAttribute("src", externalComplete ? CHECK : NOT_CHECKED);
 	}
 
 	//送信ボタンのdisable切り替え

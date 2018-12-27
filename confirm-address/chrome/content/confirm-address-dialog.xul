@@ -13,6 +13,8 @@
 	buttondisabledaccept="true"
 	width="500" height="385">
 
+	<script type="application/javascript" src="nsUserSettings.js"/>
+	<script type="application/javascript" src="setting.js"/>
 	<script type="application/javascript" src="confirm-address-dialog.js"/>
 
 	<label id="dialog_message" value="&confirm.dialog.message;"/>
@@ -29,7 +31,8 @@
 	</tree>
 	<tree flex="1" rows="5" editable="true" hidecolumnpicker="true" id="otherDomainsTree">
 		<treecols>
-			<treecol type="checkbox" editable="true" width="40" id="otherDomainsCheckCol" />
+			<treecol type="checkbox" editable="true" width="40" id="otherDomainsCheckCol" class="treecol-image"
+				tooltiptext="&confirm.dialog.otherdomain.tooltip;"/>
 			<treecol width="30" />
 			<treecol flex="2" id="otherDomains_header" label="&confirm.dialog.otherdomain.label;"/>
 		</treecols>
