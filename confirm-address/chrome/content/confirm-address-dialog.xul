@@ -20,7 +20,7 @@
 	<label id="dialog_message" value="&confirm.dialog.message;"/>
 	<tree flex="1" rows="4" editable="true" hidecolumnpicker="true" id="yourDomainsTree">
 		<treecols>
-			<treecol type="checkbox" editable="true" width="40" id="yourDomainsCheckCol" class="treecol-image"
+			<treecol type="checkbox" editable="true" width="40" id="yourDomainsCheckCol" is="treecol-image" class="treecol-image"
 				tooltiptext="&confirm.dialog.yourdomain.tooltip;">
 			</treecol>
 			<treecol width="30" />
@@ -31,7 +31,7 @@
 	</tree>
 	<tree flex="1" rows="5" editable="true" hidecolumnpicker="true" id="otherDomainsTree">
 		<treecols>
-			<treecol type="checkbox" editable="true" width="40" id="otherDomainsCheckCol" class="treecol-image"
+			<treecol type="checkbox" editable="true" width="40" id="otherDomainsCheckCol" is="treecol-image" class="treecol-image"
 				tooltiptext="&confirm.dialog.otherdomain.tooltip;"/>
 			<treecol width="30" />
 			<treecol flex="2" id="otherDomains_header" label="&confirm.dialog.otherdomain.label;"/>

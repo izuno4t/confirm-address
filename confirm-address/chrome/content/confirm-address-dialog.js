@@ -157,3 +157,37 @@ caDialog.doCancel = function () {
 	window.arguments[0].setConfirmOK(false);
 	return true;
 };
+
+class MozTreecolImage extends customElements.get("treecol") {
+  static get observedAttributes() {
+    return ["src"];
+  }
+
+  connectedCallback() {
+    this.image = document.createElement("image");
+    this.image.classList.add("treecol-icon");
+
+    this.appendChild(this.image);
+    this._updateAttributes();
+  }
+
+  attributeChangedCallback() {
+    this._updateAttributes();
+  }
+
+  _updateAttributes() {
+    if (!this.isConnected || !this.image) {
+      return;
+    }
+
+    const src = this.getAttribute("src");
+
+    if (src != null) {
+      this.image.setAttribute("src", src);
+    } else {
+      this.image.removeAttribute("src");
+    }
+  }
+}
+
+customElements.define("treecol-image", MozTreecolImage, { extends: "treecol" });
