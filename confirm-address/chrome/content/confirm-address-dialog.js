@@ -99,9 +99,12 @@ caDialog.checkAllChecked = function () {
 				internalComplete = false;
 			}
 		}
-		// 全て選択チェックもつけておく
-		var yourDomainsHeader = document.getElementById("yourDomainsCheckCol");
-		yourDomainsHeader.setAttribute("src", internalComplete ? CHECK : NOT_CHECKED);
+	    var isBatchCheckYour = nsPreferences.getBoolPref(CA_CONST.IS_BATCH_CHECK_MYDOMAIN);
+		if (isBatchCheckYour) {
+			// 全て選択チェックもつけておく
+			var yourDomainsHeader = document.getElementById("yourDomainsCheckCol");
+			yourDomainsHeader.setAttribute("src", internalComplete ? CHECK : NOT_CHECKED);
+		}
 	}
 
 	//他ドメインのチェック状況を確認
@@ -113,9 +116,12 @@ caDialog.checkAllChecked = function () {
 				externalComplete = false;
 			}
 		}
-		// 全て選択チェックもつけておく
-		var otherDomainsHeader = document.getElementById("otherDomainsCheckCol");
-		otherDomainsHeader.setAttribute("src", externalComplete ? CHECK : NOT_CHECKED);
+		var isBatchCheckOther = nsPreferences.getBoolPref(CA_CONST.IS_BATCH_CHECK_OTHERDOMAIN);
+		if (isBatchCheckOther) {
+			// 全て選択チェックもつけておく
+			var otherDomainsHeader = document.getElementById("otherDomainsCheckCol");
+			otherDomainsHeader.setAttribute("src", externalComplete ? CHECK : NOT_CHECKED);
+		}
 	}
 
 	//送信ボタンのdisable切り替え
