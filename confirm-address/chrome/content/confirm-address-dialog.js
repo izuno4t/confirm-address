@@ -8,13 +8,11 @@ caDialog.startup = function () {
 
 	var onClickCheck = function (event) {
 		var tree = this;
-		var tbo = tree.treeBoxObject;
 		// get the row, col and child element at the point
-		var row = {}, col = {}, child = {};
-		tbo.getCellAt(event.clientX, event.clientY, row, col, child);
-		if (col.value != null && col.value.id.indexOf("CheckCol") > 0) {
-			var checked = tree.view.getCellValue(row.value, col.value) == "true";
-			var item = tree.children[1].children[row.value];
+		var cell = tree.getCellAt(event.clientX, event.clientY);
+		if (cell.col != null && cell.col.id.indexOf("CheckCol") > 0) {
+			var checked = tree.view.getCellValue(cell.row, cell.col) == "true";
+			var item = tree.children[1].children[cell.row];
 			var cells = item.getElementsByTagName("treecell");
 			for (var i = 0, len = cells.length; i < len; i++) {
 				cells[i].setAttribute("properties", checked ? 'checked' : '');
