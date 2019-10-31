@@ -1,7 +1,7 @@
 const EXPORTED_SYMBOLS = ["ConfirmAddress"];
 
 var global = this;
-ChromeUtils.import("resource://gre/modules/Services.jsm");
+let { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 ChromeUtils.import("chrome://confirm-address/content/nsUserSettings.js", this);
 ChromeUtils.import("chrome://confirm-address/content/setting.js", this);
 

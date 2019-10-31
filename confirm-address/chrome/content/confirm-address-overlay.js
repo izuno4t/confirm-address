@@ -6,7 +6,7 @@
 var EXPORTED_SYMBOLS = ["SendMessage", "SendMessageWithCheck", "SendMessageLater"];
 
 let global = this;
-ChromeUtils.import("resource://gre/modules/Services.jsm");
+let { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 ChromeUtils.import("chrome://confirm-address/content/confirm-address.js", global);
 
 var SendMessage = function () {

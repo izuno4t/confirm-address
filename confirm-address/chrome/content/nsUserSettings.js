@@ -4,7 +4,7 @@
 
 var EXPORTED_SYMBOLS = ["nsPreferences"];
 
-Components.utils.import("resource://gre/modules/Services.jsm");
+let { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 const PREF_ROOT = "com.kenmaz.confirm-address.";
 
 // Originally copy from here:

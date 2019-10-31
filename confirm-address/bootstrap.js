@@ -1,6 +1,6 @@
 "use strict";
 
-ChromeUtils.import("resource://gre/modules/Services.jsm");
+let { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
 
 let importScripts = function (scope) {
     ChromeUtils.import("chrome://confirm-address/content/confirm-address-overlay.js", scope);
