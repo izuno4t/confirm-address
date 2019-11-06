@@ -15,16 +15,19 @@ var SendMessage = function () {
   }
 
   // Copied from MsgComposeCommands.js.
-  var sendInBackground = Services.prefs.getBoolPref("mailnews.sendInBackground");
-  if (sendInBackground && !Application.platformIsMac) {
-    var enumerator = Services.wm.getEnumerator(null);
-    var count = 0;
+  let sendInBackground = Services.prefs.getBoolPref(
+    "mailnews.sendInBackground"
+  );
+  if (sendInBackground && AppConstants.platform != "macosx") {
+    let enumerator = Services.wm.getEnumerator(null);
+    let count = 0;
     while (enumerator.hasMoreElements() && count < 2) {
-      var win = enumerator.getNext();
+      enumerator.getNext();
       count++;
     }
-    if (count == 1)
+    if (count == 1) {
       sendInBackground = false;
+    }
   }
 
   var window = Services.wm.getMostRecentWindow("msgcompose");
@@ -43,34 +46,45 @@ var SendMessageWithCheck = function () {
   }
   //add end
   // Copied and modified from MsgComposeCommands.js.
-  var warn = getPref("mail.warn_on_send_accel_key");
+  var warn = Services.prefs.getBoolPref("mail.warn_on_send_accel_key");
+
+  var window = Services.wm.getMostRecentWindow("msgcompose");
   if (warn) {
-    var checkValue = {value:false};
-    var bundle = document.getElementById("bundle_composeMsgs");
-    var buttonPressed = Services.prompt.confirmEx(window,
-          bundle.getString('sendMessageCheckWindowTitle'),
-          bundle.getString('sendMessageCheckLabel'),
-          (Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
-          (Services.prompt.BUTTON_TITLE_CANCEL * Services.prompt.BUTTON_POS_1),
-          bundle.getString('sendMessageCheckSendButtonLabel'),
-          null, null,
-          bundle.getString('CheckMsg'),
-          checkValue);
+    let bundle = window.getComposeBundle();
+    let checkValue = { value: false };
+    let buttonPressed = Services.prompt.confirmEx(
+      window,
+      bundle.getString("sendMessageCheckWindowTitle"),
+      bundle.getString("sendMessageCheckLabel"),
+      Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0 +
+        Services.prompt.BUTTON_TITLE_CANCEL * Services.prompt.BUTTON_POS_1,
+      bundle.getString("sendMessageCheckSendButtonLabel"),
+      null,
+      null,
+      bundle.getString("CheckMsg"),
+      checkValue
+    );
     if (buttonPressed != 0) {
-        return;
+      return;
     }
     if (checkValue.value) {
-      var branch = Components.classes["@mozilla.org/preferences-service;1"]
-                             .getService(Components.interfaces.nsIPrefBranch);
-      branch.setBoolPref("mail.warn_on_send_accel_key", false);
+      Services.prefs.setBoolPref("mail.warn_on_send_accel_key", false);
     }
   }
-  var sendInBackground = Services.prefs.getBoolPref("mailnews.sendInBackground");
-  var window = Services.wm.getMostRecentWindow("msgcompose");
-  window.GenericSendMessage(Services.io.offline ? Ci.nsIMsgCompDeliverMode.Later :
-                            (sendInBackground ?
-                             Ci.nsIMsgCompDeliverMode.Background :
-                             Ci.nsIMsgCompDeliverMode.Now));
+
+  let sendInBackground = Services.prefs.getBoolPref(
+    "mailnews.sendInBackground"
+  );
+
+  let mode;
+  if (Services.io.offline) {
+    mode = Ci.nsIMsgCompDeliverMode.Later;
+  } else {
+    mode = sendInBackground
+      ? Ci.nsIMsgCompDeliverMode.Background
+      : Ci.nsIMsgCompDeliverMode.Now;
+  }
+  window.GenericSendMessage(mode);
   window.ExitFullscreenMode();
 };
 
