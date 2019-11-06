@@ -7,6 +7,9 @@ function startup(){
 	if(parentWindow.domainName !== null){
 		document.getElementById("textbox").value = parentWindow.domainName;
 	}
+
+	document.addEventListener("dialogaccept", doOK);
+	document.addEventListener("dialogcancel", doCancel);
 }
 
 function doOK(){

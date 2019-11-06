@@ -75,6 +75,9 @@ function startup(){
 	var isBatchCheckother = nsPreferences.getBoolPref(CA_CONST.IS_BATCH_CHECK_OTHERDOMAIN);
 	var batchCheckBoxother = document.getElementById("batchcheck-otherdomain");
 	batchCheckBoxother.checked = isBatchCheckother;
+
+	document.addEventListener("dialogaccept", doOK);
+	document.addEventListener("dialogcancel", doCancel);
 }
 
 function addItem() {

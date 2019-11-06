@@ -7,8 +7,6 @@
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	buttons="accept,cancel"
 	onload="caDialog.startup()"
-	ondialogaccept="return caDialog.doOK();"
-	ondialogcancel="return caDialog.doCancel();"
 	buttonlabelaccept="&confirm.dialog.acceptbtn.label;"
 	buttondisabledaccept="true"
 	width="500" height="385">

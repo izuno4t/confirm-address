@@ -58,6 +58,9 @@ caDialog.startup = function () {
 			caDialog.switchInternalCheckBox(externalList);
 		};
 	}
+
+	document.addEventListener("dialogaccept", caDialog.doOK);
+	document.addEventListener("dialogcancel", caDialog.doCancel);
 };
 
 caDialog.createListItem = function (item) {
