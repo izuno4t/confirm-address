@@ -28,7 +28,7 @@ function startup(data, reason) {
     ///   string version
     ///   nsIFile installPath
     ///   nsIURI resourceURI
-    /// 
+    ///
     /// Reason types:
     ///   APP_STARTUP
     ///   ADDON_ENABLE
@@ -43,7 +43,7 @@ function shutdown(data, reason) {
     ///   string version
     ///   nsIFile installPath
     ///   nsIURI resourceURI
-    /// 
+    ///
     /// Reason types:
     ///   APP_SHUTDOWN
     ///   ADDON_DISABLE
@@ -58,7 +58,7 @@ function install(data, reason) {
     ///   string version
     ///   nsIFile installPath
     ///   nsIURI resourceURI
-    /// 
+    ///
     /// Reason types:
     ///   ADDON_INSTALL
     ///   ADDON_UPGRADE
@@ -70,7 +70,7 @@ function uninstall(data, reason) {
     ///   string version
     ///   nsIFile installPath
     ///   nsIURI resourceURI
-    /// 
+    ///
     /// Reason types:
     ///   ADDON_UNINSTALL
     ///   ADDON_UPGRADE
